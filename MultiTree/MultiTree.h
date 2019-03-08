@@ -1,9 +1,14 @@
-#pragma once
+#ifndef MULTITREE_H_
+#define MULTITREE_H_
 
 #include <algorithm>
 #include <typeinfo.h>
 #include "stdio.h"
 #include "Stack.h"
+
+template <typename T> class TreeNode;
+template <typename T> class MultiTree;
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /*¸´ÔÓ½á¹¹ÊÍ·ÅÆ÷*/
@@ -56,14 +61,15 @@ template <typename T>
 class TreeNode
 {
 public:
-	Friend class MultiTree<T>;
+	friend class MultiTree<T>;
+
 
 	// ³ÉÔ±
 	T data; //Êý¾Ý
 
 	// ¹¹Ôìº¯Êý
 	TreeNode() :
-		parent(NULL), elder(NULL), younger(NULL), ch(NULL), height(0) { }
+		parent(NULL), elder(NULL), younger(NULL), child(NULL) { }
 
 	TreeNode(T d, TreeNode<T>* p = NULL, TreeNode<T>* eld = NULL, TreeNode<T>* young = NULL, TreeNode<T>* ch = NULL) :
 		data(d), parent(p), elder(eld), younger(young), child(ch) { }
@@ -78,6 +84,7 @@ private:
 	// ²Ù×÷½Ó¿Ú
 	TreeNode<T>* insertAsCh(T const&); //ÐÂ½¨½Úµã×÷Îªµ±Ç°½ÚµãµÄ×îÐ¡º¢×Ó²åÈë
 	template <typename VST> void travPre(VST&); //×ÓÊ÷ÏÈÐò±éÀú
+	void removeSucc(); //µÝ¹éÉ¾³ýx´¦½Úµã¼°Æäºó´ú
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +94,7 @@ private:
 template <typename T>
 TreeNode<T>* TreeNode<T>::insertAsCh(T const & d)  //ÐÂ½¨½Úµã×÷Îªµ±Ç°½ÚµãµÄ×îÐ¡º¢×Ó²åÈë
 {
-	ch = new TreeNode(d, this, this->child);
+	TreeNode<T>* ch = new TreeNode(d, this, this->child);
 	this->child->younger = ch;
 	this->child = ch;
 	return ch;
@@ -113,6 +120,21 @@ void TreeNode<T>::travPre(VST & visit)  //×ÓÊ÷ÏÈÐò±éÀú
 	}
 }
 
+template <typename T> //µÝ¹éÉ¾³ýx´¦½Úµã¼°Æäºó´ú
+void TreeNode<T>::removeSucc()
+{
+	TreeNode<T>* x = this;
+	if (x == NULL)
+		return; //µÝ¹é»ù
+	TreeNode<T>* temp = x->child;
+	while (x->child)
+	{
+		x->child = x->child->elder;
+		x->child->elder->removeSucc();
+	}
+	release(x->data); //release()¸ºÔðÊÍ·Å¸´ÔÓ½á¹¹
+	release(x);
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /*¶à²æÊ÷Ä£°åÀà*/
@@ -127,7 +149,7 @@ protected:
 public:
 	MultiTree() : _size(0), _root(NULL) { } //¹¹Ôìº¯Êý
 
-	virtual ~BinTree() //Îö¹¹º¯Êý
+	virtual ~MultiTree() //Îö¹¹º¯Êý
 	{
 		if (0 < _size)
 			remove(_root);
@@ -181,23 +203,10 @@ void MultiTree<T>::remove(TreeNode<T>* x)
 	{
 		x->elder->younger = x->younger; //ÇÐ¶ÏÀ´×ÔÐÖ³¤µÄÖ¸Õë
 	}
-	removeAt(x);
+	x->removeSucc();
 }
 
-template <typename T> //µÝ¹éÉ¾³ýx´¦½Úµã¼°Æäºó´ú
-static void removeAt(TreeNode<T>* x)
-{
-	if (x == NULL)
-		return; //µÝ¹é»ù
-	TreeNode<T>* temp = x->child;
-	while (x->child)
-	{
-		x->child = x->child->elder;
-		removeAt(x->child->elder);
-	}
-	release(x->data); //release()¸ºÔðÊÍ·Å¸´ÔÓ½á¹¹
-	release(x);
-}
+
 
 template<typename T>
 TreeNode<T>* MultiTree<T>::insertAsRoot(T const & e)
@@ -215,4 +224,4 @@ TreeNode<T>* MultiTree<T>::insertAsYC(TreeNode<T>* x, T const& e)  //e²åÈëÎªxµÄ×
 }
 
 
-
+#endif // MULTITREE_H_
