@@ -6,7 +6,6 @@
 #include "stdio.h"
 #include "Stack.h"
 
-template <typename T> class TreeNode;
 template <typename T> class MultiTree;
 
 
@@ -95,7 +94,10 @@ template <typename T>
 TreeNode<T>* TreeNode<T>::insertAsCh(T const & d)  //ÐÂ½¨½Úµã×÷Îªµ±Ç°½ÚµãµÄ×îÐ¡º¢×Ó²åÈë
 {
 	TreeNode<T>* ch = new TreeNode(d, this, this->child);
-	this->child->younger = ch;
+	if (this->child)
+	{
+		this->child->younger = ch;
+	}
 	this->child = ch;
 	return ch;
 }
@@ -126,11 +128,12 @@ void TreeNode<T>::removeSucc()
 	TreeNode<T>* x = this;
 	if (x == NULL)
 		return; //µÝ¹é»ù
-	TreeNode<T>* temp = x->child;
+	TreeNode<T>* temp;
 	while (x->child)
 	{
-		x->child = x->child->elder;
-		x->child->elder->removeSucc();
+		temp = x->child;
+		x->child = temp->elder;
+		temp->removeSucc();
 	}
 	release(x->data); //release()¸ºÔðÊÍ·Å¸´ÔÓ½á¹¹
 	release(x);
@@ -191,7 +194,7 @@ public:
 template <typename T> //É¾³ý¶þ²æÊ÷ÖÐÎ»ÖÃx´¦µÄ½Úµã¼°Æäºó´ú
 void MultiTree<T>::remove(TreeNode<T>* x)
 { //assert: xÎª¶þ²æÊ÷ÖÐµÄºÏ·¨Î»ÖÃ
-	if (x->parent->child == x)
+	if (x->parent && x->parent->child == x)
 	{
 		x->parent->child = (x->elder) ? x->elder : NULL; //ÇÐ¶ÏÀ´×Ô¸¸½ÚµãµÄÖ¸Õë
 	}
@@ -206,8 +209,6 @@ void MultiTree<T>::remove(TreeNode<T>* x)
 	x->removeSucc();
 }
 
-
-
 template<typename T>
 TreeNode<T>* MultiTree<T>::insertAsRoot(T const & e)
 {
@@ -220,7 +221,7 @@ TreeNode<T>* MultiTree<T>::insertAsYC(TreeNode<T>* x, T const& e)  //e²åÈëÎªxµÄ×
 {
 	_size++;
 	x->insertAsCh(e);
-	return x->rc;
+	return x->child;
 }
 
 
