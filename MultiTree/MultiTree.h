@@ -68,14 +68,19 @@ public:
 
 	// 构造函数
 	TreeNode() :
-		parent(NULL), elder(NULL), younger(NULL), child(NULL) { }
+		_parent(NULL), elder(NULL), younger(NULL), child(NULL) { }
 
 	TreeNode(T d, TreeNode<T>* p = NULL, TreeNode<T>* eld = NULL, TreeNode<T>* young = NULL, TreeNode<T>* ch = NULL) :
-		data(d), parent(p), elder(eld), younger(young), child(ch) { }
+		data(d), _parent(p), elder(eld), younger(young), child(ch) { }
+
+	TreeNode<T>* parent() const
+	{
+		return this->_parent;
+	}
 
 private:
 	// 成员
-	TreeNode<T>* parent; //父节点
+	TreeNode<T>* _parent; //父节点
 	TreeNode<T>* elder; //兄长
 	TreeNode<T>* younger; //弟弟
 	TreeNode<T>* child; //最小孩子
@@ -106,14 +111,15 @@ template<typename T>
 template<typename VST>
 void TreeNode<T>::travPre(VST & visit)  //子树先序遍历
 {
-	Stack<BinNodePosi(T)> S; //辅助栈
+	Stack<TreeNode<T>*> S; //辅助栈
 	TreeNode<T>* x = this;
-	TreeNode<T>* temp = x->child;
+	TreeNode<T>* temp;
 	S.push(x);  //根节点入栈
 	while (!S.empty())  //在栈变空之前反复循环
 	{
 		x = S.pop();
 		visit(x->data);  //弹出并访问当前节点，其非空孩子的入栈次序为先右后左
+		temp = x->child;
 		while (temp)
 		{
 			S.push(temp);
@@ -179,6 +185,12 @@ public:
 
 	void remove(TreeNode<T>* x); //删除以位置x处节点为根的子树
 
+	void travPre(void(*visit) (T&)) //借助函数指针机制
+	{
+		if (_root)
+			_root->travPre(visit);
+	} //遍历向量
+
 	template <typename VST> //用操作器VST遍历
 	void travPre(VST& visit)
 	{
@@ -194,9 +206,9 @@ public:
 template <typename T> //删除二叉树中位置x处的节点及其后代
 void MultiTree<T>::remove(TreeNode<T>* x)
 { //assert: x为二叉树中的合法位置
-	if (x->parent && x->parent->child == x)
+	if (x->_parent && x->_parent->child == x)
 	{
-		x->parent->child = (x->elder) ? x->elder : NULL; //切断来自父节点的指针
+		x->_parent->child = (x->elder) ? x->elder : NULL; //切断来自父节点的指针
 	}
 	if (x->younger)
 	{
