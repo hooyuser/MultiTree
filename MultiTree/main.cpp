@@ -22,11 +22,11 @@ enum direction { NONE, UP, DOWN, LEFT, RIGHT };
 //	myTree.travPre([](int & n) { cout << n << " "; });
 //}
 
-//ÊäÈëÇø
+//è¾“å…¥åŒº
 const int ROW = 4;  //MAXROW
 const int COL = 7;  //MAXCOL
 const int SROW = 0;  //Started Row
-const int SCOL = 3;	 //Started Column
+const int SCOL = 3;  //Started Column
 const int TROW = 2;  //Teminateded Row
 const int TCOL = 6;  //Teminateded Column
 const int INIT[ROW][COL] = { { 0,-1, 0, 1, 0,-1, 0},
@@ -34,7 +34,7 @@ const int INIT[ROW][COL] = { { 0,-1, 0, 1, 0,-1, 0},
 							 {-1, 0,-1,-1,-1,-1, 0},
 							 { 0, 0, 0, 0, 0,-1,-1} };
 
-//¶şÎ¬Êı¾İµã
+//äºŒç»´æ•°æ®ç‚¹
 class point
 {
 public:
@@ -46,11 +46,11 @@ public:
 };
 
 
-//Î»ÒÆËã×Ó
+//ä½ç§»ç®—å­
 point* up(TreeNode<point>* cur, int map[ROW][COL])
 {
 	int xx = cur->data.x;
-	while (xx > -1 && map[xx][cur->data.y] != 0) //Èôxx²»ºÏ·¨£¬Ôò--
+	while (xx > -1 && map[xx][cur->data.y] != 0) //è‹¥xxä¸åˆæ³•ï¼Œåˆ™--
 	{
 		xx--;
 	}
@@ -67,7 +67,7 @@ point* up(TreeNode<point>* cur, int map[ROW][COL])
 point* down(TreeNode<point>* cur, int map[ROW][COL])
 {
 	int xx = cur->data.x;
-	while (xx < ROW && map[xx][cur->data.y] != 0) //Èôxx²»ºÏ·¨£¬Ôò++
+	while (xx < ROW && map[xx][cur->data.y] != 0) //è‹¥xxä¸åˆæ³•ï¼Œåˆ™++
 	{
 		xx++;
 	}
@@ -84,7 +84,7 @@ point* down(TreeNode<point>* cur, int map[ROW][COL])
 point* left(TreeNode<point>* cur, int map[ROW][COL])
 {
 	int yy = cur->data.y;
-	while (yy > -1 && map[cur->data.x][yy] != 0) //Èôyy²»ºÏ·¨£¬Ôò--
+	while (yy > -1 && map[cur->data.x][yy] != 0) //è‹¥yyä¸åˆæ³•ï¼Œåˆ™--
 	{
 		yy--;
 	}
@@ -101,7 +101,7 @@ point* left(TreeNode<point>* cur, int map[ROW][COL])
 point* right(TreeNode<point>* cur, int map[ROW][COL])
 {
 	int yy = cur->data.y;
-	while (yy < COL && map[cur->data.x][yy] != 0) //Èôyy²»ºÏ·¨£¬Ôò++
+	while (yy < COL && map[cur->data.x][yy] != 0) //è‹¥yyä¸åˆæ³•ï¼Œåˆ™++
 	{
 		yy++;
 	}
@@ -115,7 +115,7 @@ point* right(TreeNode<point>* cur, int map[ROW][COL])
 	}
 }
 
-//½« map µÄ×´Ì¬Ñİ»¯µ½ËÑË÷Ê÷µÄ½Úµã cur ´¦
+//å°† map çš„çŠ¶æ€æ¼”åŒ–åˆ°æœç´¢æ ‘çš„èŠ‚ç‚¹ cur å¤„
 int evolution(TreeNode<point>* cur, int map[ROW][COL])
 {
 	int height = 0;
@@ -136,17 +136,17 @@ int evolution(TreeNode<point>* cur, int map[ROW][COL])
 	return height;
 }
 
-//Ö÷³ÌĞòÈë¿Ú
+//ä¸»ç¨‹åºå…¥å£
 int main()
 {
-	start = clock();  //¼ÆÊ±¿ªÊ¼
-	int map[ROW][COL];  //¼ÇÂ¼×´Ì¬
-	MultiTree<point> searchTree = MultiTree<point>();  //¶¨ÒåËÑË÷Ê÷
-	Stack<TreeNode<point>*> S;  //¶¨Òå¸¨ÖúÕ»
-	TreeNode<point>* visit = NULL;  //µ±Ç°¼¤»îµÄ½Úµã
-	int depth = 0;  //µ±Ç°¼¤»î½ÚµãËù´¦µÄÉî¶È
+	start = clock();  //è®¡æ—¶å¼€å§‹
+	int map[ROW][COL];  //è®°å½•çŠ¶æ€
+	MultiTree<point> searchTree = MultiTree<point>();  //å®šä¹‰æœç´¢æ ‘
+	Stack<TreeNode<point>*> S;  //å®šä¹‰è¾…åŠ©æ ˆ
+	TreeNode<point>* visit = NULL;  //å½“å‰æ¿€æ´»çš„èŠ‚ç‚¹
+	int depth = 0;  //å½“å‰æ¿€æ´»èŠ‚ç‚¹æ‰€å¤„çš„æ·±åº¦
 
-	int LENGTH = -1;  //¶¨Òå²¢¼ÆËãÄ¿±êËÑË÷Éî¶È
+	int LENGTH = -1;  //å®šä¹‰å¹¶è®¡ç®—ç›®æ ‡æœç´¢æ·±åº¦
 	for (int i = 0; i < ROW; i++)
 	{
 		for (int j = 0; j < COL; j++)
@@ -158,15 +158,15 @@ int main()
 		}
 	}
 
-	S.push(searchTree.insertAsRoot(point(SROW, SCOL, NONE)));  //¸ù½ÚµãÈëÕ»
-	while (!S.empty() && depth <= LENGTH)  //ÈôÎ´µÖ´ïÄ¿±êÉî¶ÈÇÒÕ»Î´¿ÕÖ®Ç°£¬Ôò·´¸´Ñ­»·
+	S.push(searchTree.insertAsRoot(point(SROW, SCOL, NONE)));  //æ ¹èŠ‚ç‚¹å…¥æ ˆ
+	while (!S.empty() && depth <= LENGTH)  //è‹¥æœªæŠµè¾¾ç›®æ ‡æ·±åº¦ä¸”æ ˆæœªç©ºä¹‹å‰ï¼Œåˆ™åå¤å¾ªç¯
 	{
-		visit = S.pop(); //µ¯³öµ±Ç°½Úµã
-		depth = evolution(visit, map);  //Ñİ»¯³öµ±Ç°×´Ì¬
-		point* pos;  //·Ç¿Õº¢×ÓµÄÈëÕ»´ÎĞòÎªÏÈÓÒºó×ó
-		if ((visit->data.dir != DOWN) && (pos = up(visit, map)))  //²»×ß»ØÍ·Â·£¬ÇÒ¸ÃÎ»ÒÆÊÇ¿ÉĞĞµÄ
+		visit = S.pop(); //å¼¹å‡ºå½“å‰èŠ‚ç‚¹
+		depth = evolution(visit, map);  //æ¼”åŒ–å‡ºå½“å‰çŠ¶æ€
+		point* pos;  //éç©ºå­©å­çš„å…¥æ ˆæ¬¡åºä¸ºå…ˆå³åå·¦
+		if ((visit->data.dir != DOWN) && (pos = up(visit, map)))  //ä¸èµ°å›å¤´è·¯ï¼Œä¸”è¯¥ä½ç§»æ˜¯å¯è¡Œçš„
 		{
-			S.push(searchTree.insertAsYC(visit, *pos));  //ÏòÏÂÀ©Õ¹ËÑË÷Ê÷£¬Ñ¹Õ»
+			S.push(searchTree.insertAsYC(visit, *pos));  //å‘ä¸‹æ‰©å±•æœç´¢æ ‘ï¼Œå‹æ ˆ
 		}
 		if ((visit->data.dir != UP) && (pos = down(visit, map)))
 		{
@@ -182,11 +182,11 @@ int main()
 		}
 	}
 
-	ending = clock();  //¼ÆÊ±½áÊø
+	ending = clock();  //è®¡æ—¶ç»“æŸ
 	double endtime = (double)(ending - start) / CLOCKS_PER_SEC;
-	cout << "Total time:" << endtime * 1000 << "ms" << endl;	//Êä³ö×ÜºÄÊ±£¬msÎªµ¥Î»
+	cout << "Total time:" << endtime * 1000 << "ms" << endl;	//è¾“å‡ºæ€»è€—æ—¶ï¼Œmsä¸ºå•ä½
 
-	while (visit)  //·´ÏòÊä³öÂ·¾¶
+	while (visit)  //åå‘è¾“å‡ºè·¯å¾„
 	{
 		cout << "(" << visit->data.x+1 << "," << visit->data.y+1 << ")\n";
 		visit = visit->parent();
