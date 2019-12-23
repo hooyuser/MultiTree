@@ -78,12 +78,25 @@ public:
 		return this->_parent;
 	}
 
+	int depth() const //¸ù½ÚµãNULLµ½×Ô¼ºµÄ¾àÀë
+	{
+		int n = 0;
+		const TreeNode<T>* p = this;
+		while (p)
+		{
+			n++;
+			p = p->_parent;
+		}
+		return n;
+	}
+
 private:
 	// ³ÉÔ±
 	TreeNode<T>* _parent; //¸¸½Úµã
 	TreeNode<T>* elder; //ÐÖ³¤
 	TreeNode<T>* younger; //µÜµÜ
 	TreeNode<T>* child; //×îÐ¡º¢×Ó
+
 
 	// ²Ù×÷½Ó¿Ú
 	TreeNode<T>* insertAsCh(T const&); //ÐÂ½¨½Úµã×÷Îªµ±Ç°½ÚµãµÄ×îÐ¡º¢×Ó²åÈë
@@ -96,7 +109,7 @@ private:
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
-TreeNode<T>* TreeNode<T>::insertAsCh(T const & d)  //ÐÂ½¨½Úµã×÷Îªµ±Ç°½ÚµãµÄ×îÐ¡º¢×Ó²åÈë
+TreeNode<T>* TreeNode<T>::insertAsCh(T const& d)  //ÐÂ½¨½Úµã×÷Îªµ±Ç°½ÚµãµÄ×îÐ¡º¢×Ó²åÈë
 {
 	TreeNode<T>* ch = new TreeNode(d, this, this->child);
 	if (this->child)
@@ -109,7 +122,7 @@ TreeNode<T>* TreeNode<T>::insertAsCh(T const & d)  //ÐÂ½¨½Úµã×÷Îªµ±Ç°½ÚµãµÄ×îÐ¡º
 
 template<typename T>
 template<typename VST>
-void TreeNode<T>::travPre(VST & visit)  //×ÓÊ÷ÏÈÐò±éÀú
+void TreeNode<T>::travPre(VST& visit)  //×ÓÊ÷ÏÈÐò±éÀú
 {
 	Stack<TreeNode<T>*> S; //¸¨ÖúÕ»
 	TreeNode<T>* x = this;
@@ -153,10 +166,11 @@ class MultiTree
 {
 protected:
 	int _size; //¹æÄ£
+	int _height; //Ê÷¸ß
 	TreeNode<T>* _root; //¸ù½ÚµãÖ¸Õë
 
 public:
-	MultiTree() : _size(0), _root(NULL) { } //¹¹Ôìº¯Êý
+	MultiTree() : _size(0), _height(0), _root(NULL) { } //¹¹Ôìº¯Êý
 
 	virtual ~MultiTree() //Îö¹¹º¯Êý
 	{
@@ -177,6 +191,11 @@ public:
 	int size() const  //¹æÄ£
 	{
 		return _size;
+	}
+
+	int height() const  //¹æÄ£
+	{
+		return _height;
 	}
 
 	TreeNode<T>* insertAsRoot(T const& e); //²åÈë¸ù½Úµã
@@ -222,9 +241,9 @@ void MultiTree<T>::remove(TreeNode<T>* x)
 }
 
 template<typename T>
-TreeNode<T>* MultiTree<T>::insertAsRoot(T const & e)
+TreeNode<T>* MultiTree<T>::insertAsRoot(T const& e)
 {
-	_size = 1;
+	_size = _height = 1;
 	return _root = new TreeNode<T>(e);
 }
 
@@ -232,6 +251,7 @@ template <typename T>
 TreeNode<T>* MultiTree<T>::insertAsYC(TreeNode<T>* x, T const& e)  //e²åÈëÎªxµÄ×îÐ¡º¢×Ó
 {
 	_size++;
+	_height = _height > x->depth() ? _height : x->depth();
 	x->insertAsCh(e);
 	return x->child;
 }
